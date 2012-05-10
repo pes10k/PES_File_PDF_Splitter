@@ -72,7 +72,7 @@ class PES_File_PDF_Splitter {
       // Normalize the directory path by stripping off any possible trailing
       // slashes, and then tacking one on the end.
       $destination = rtrim($destination, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
-      $filename_parts = $this->parseFileName($pdf->getFilename());
+      $filename_parts = $this->parseFileName($this->PDFPath());
 
       // An array to keep track of the names of all the png
       // images we generate from pages of the PDF.
@@ -80,14 +80,14 @@ class PES_File_PDF_Splitter {
 
       foreach ($pdf as $index => $a_page) {
 
-        $im->setImageFormat('png');
+        $a_page->setImageFormat('png');
 
         $file_name = $destination . $filename_parts['base'] . '-' . ($index + 1) . '.png';
 
         // If there is already a file with this name on the filesystem,
         // don't overwrite it.  Instead, assume its identical to what
         // we'd have generated and return the name anyway.
-        if (is_file($file_name) OR file_put_contents($file_name, $im)) {
+        if (is_file($file_name) OR file_put_contents($file_name, $a_page)) {
 
           $generated_images[] = $file_name;
         }
