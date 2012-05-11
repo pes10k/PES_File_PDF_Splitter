@@ -36,9 +36,9 @@ class PES_File_PDF_Splitter {
    * The X resolution to use when reading in the PDF, and therefor how
    * wide the resolution will be when writing the PNG files.  Higher
    * values result in larger PNG files.
-   * 
+   *
    * (default value: 100)
-   * 
+   *
    * @var int
    * @access private
    */
@@ -48,9 +48,9 @@ class PES_File_PDF_Splitter {
    * The Y resolution to use when reading in the PDF, and therefor how
    * wide the resolution will be when writing the PNG files.  Higher
    * values result in larger PNG files.
-   * 
+   *
    * (default value: 100)
-   * 
+   *
    * @var int
    * @access private
    */
@@ -111,7 +111,7 @@ class PES_File_PDF_Splitter {
         // If there is already a file with this name on the filesystem,
         // don't overwrite it.  Instead, assume its identical to what
         // we'd have generated and return the name anyway.
-        if (TRUE OR !is_file($file_name)) {
+        if ( ! is_file($file_name)) {
 
           $a_page->setImageFormat('png');
           $a_page->setFilename($file_name);
@@ -167,7 +167,7 @@ class PES_File_PDF_Splitter {
    * Returns the X resolution used to read in the PDF file.
    *
    * @see http://www.php.net/manual/en/imagick.setresolution.php
-   * 
+   *
    * @return int
    */
   public function xResolution () {
@@ -195,7 +195,7 @@ class PES_File_PDF_Splitter {
    * Returns the Y resolution used to read in the PDF file.
    *
    * @see http://www.php.net/manual/en/imagick.setresolution.php
-   * 
+   *
    * @return int
    */
   public function yResolution () {
