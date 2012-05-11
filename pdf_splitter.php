@@ -17,6 +17,18 @@ include 'Console/Getargs.php';
 include 'PES/File/PDF/Splitter.php';
 
 $config = array(
+  'x_res' => array(
+    'desc' => 'The x resolution used to read in the PDF',
+    'min' => 0,
+    'max' => 1,
+    'default' => 100,
+  ),
+  'y_res' => array(
+    'desc' => 'The y resolution used to read in the PDF',
+    'min' => 0,
+    'max' => 1,
+    'default' => 100,
+  ),
   'dest' => array(
     'desc' => 'The path to write the created, child PNG pages to',
     'min' => 0,
@@ -47,8 +59,11 @@ if (PEAR::isError($args)) {
 } else {
 
   $splitter = new PES_File_PDF_Splitter();
+
   $created_files = $splitter
     ->setPDFPath($args->getValue('source'))
+    ->setXResolution($args->getValue('x_res') ?: 100)
+    ->setYResolution($args->getValue('y_res') ?: 100)
     ->convertToPNG($args->getValue('dest') ?: __DIR__);
 
   echo 'Wrote ' . count($created_files) . ' PNG files:' . PHP_EOL;

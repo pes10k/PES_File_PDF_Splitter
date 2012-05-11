@@ -33,6 +33,30 @@ class PES_File_PDF_Splitter {
   private $pdf_path;
 
   /**
+   * The X resolution to use when reading in the PDF, and therefor how
+   * wide the resolution will be when writing the PNG files.  Higher
+   * values result in larger PNG files.
+   * 
+   * (default value: 100)
+   * 
+   * @var int
+   * @access private
+   */
+  private $x_resolution = 100;
+
+  /**
+   * The Y resolution to use when reading in the PDF, and therefor how
+   * wide the resolution will be when writing the PNG files.  Higher
+   * values result in larger PNG files.
+   * 
+   * (default value: 100)
+   * 
+   * @var int
+   * @access private
+   */
+  private $y_resolution = 1200;
+
+  /**
    * Constructs a PES_File_PDF_Splitter instance, and allows for instantialization
    * time setting of the PDF file this instance will represent.
    */
@@ -67,12 +91,14 @@ class PES_File_PDF_Splitter {
 
     } else {
 
-      $pdf = new imagick($this->PDFPath());
+      $pdf = new imagick();
+      $pdf->setResolution($this->x_resolution, $this->y_resolution);
+      $pdf->readImage($this->PDFPath());
 
       // Normalize the directory path by stripping off any possible trailing
       // slashes, and then tacking one on the end.
       $destination = rtrim($destination, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
-      $filename_parts = $this->parseFileName($this->PDFPath());
+      $filename_parts = $this->parseFileName(basename($this->PDFPath()));
 
       // An array to keep track of the names of all the png
       // images we generate from pages of the PDF.
@@ -80,17 +106,19 @@ class PES_File_PDF_Splitter {
 
       foreach ($pdf as $index => $a_page) {
 
-        $a_page->setImageFormat('png');
-
         $file_name = $destination . $filename_parts['base'] . '-' . ($index + 1) . '.png';
 
         // If there is already a file with this name on the filesystem,
         // don't overwrite it.  Instead, assume its identical to what
         // we'd have generated and return the name anyway.
-        if (is_file($file_name) OR file_put_contents($file_name, $a_page)) {
+        if (TRUE OR !is_file($file_name)) {
 
-          $generated_images[] = $file_name;
+          $a_page->setImageFormat('png');
+          $a_page->setFilename($file_name);
+          $a_page->writeImage($file_name);
         }
+
+        $generated_images[] = $file_name;
       }
 
       return $generated_images;
@@ -133,6 +161,62 @@ class PES_File_PDF_Splitter {
       return $this;
 
     }
+  }
+
+  /**
+   * Returns the X resolution used to read in the PDF file.
+   *
+   * @see http://www.php.net/manual/en/imagick.setresolution.php
+   * 
+   * @return int
+   */
+  public function xResolution () {
+    return $this->x_resolution;
+  }
+
+  /**
+   * Sets the X resolution used when reading in the PDF file.  Larger
+   * values here corespond to larger outputted PNG files.
+   *
+   * @see http://www.php.net/manual/en/imagick.setresolution.php
+   *
+   * @param int $x_resolution
+   *   The X resolution to use when reading the PDF
+   *
+   * @return PES_File_PDF_Splitter
+   *   A reference to the current object, to allow for method chaining.
+   */
+  public function setXResolution ($x_resolution) {
+    $this->x_resolution = $x_resolution;
+    return $this;
+  }
+
+  /**
+   * Returns the Y resolution used to read in the PDF file.
+   *
+   * @see http://www.php.net/manual/en/imagick.setresolution.php
+   * 
+   * @return int
+   */
+  public function yResolution () {
+    return $this->y_resolution;
+  }
+
+  /**
+   * Sets the Y resolution used when reading in the PDF file.  Larger
+   * values here corespond to larger outputted PNG files.
+   *
+   * @see http://www.php.net/manual/en/imagick.setresolution.php
+   *
+   * @param int $y_resolution
+   *   The Y resolution to use when reading the PDF
+   *
+   * @return PES_File_PDF_Splitter
+   *   A reference to the current object, to allow for method chaining.
+   */
+  public function setYResolution ($y_resolution) {
+    $this->y_resolution = $y_resolution;
+    return $this;
   }
 
   // ===================
