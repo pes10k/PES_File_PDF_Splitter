@@ -54,7 +54,7 @@ class PES_File_PDF_Splitter {
    * @var int
    * @access private
    */
-  private $y_resolution = 1200;
+  private $y_resolution = 100;
 
   /**
    * Constructs a PES_File_PDF_Splitter instance, and allows for instantialization
